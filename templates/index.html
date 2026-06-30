@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApexValuer Pro - Premium Real Estate Appraisal Dashboard</title>
+    <!-- Tailwind CSS v4 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Chart.js CDN for interactive data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #080c14;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(222, 53%, 12%, 1) 0, transparent 50%), 
+                radial-gradient(at 100% 100%, hsla(240, 50%, 8%, 1) 0, transparent 50%);
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism theme */
+        .glass-card {
+            background: rgba(13, 20, 35, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.4);
+        }
+
+        .glass-card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card-hover:hover {
+            border-color: rgba(59, 130, 246, 0.25);
+            box-shadow: 0 15px 35px 0 rgba(59, 130, 246, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Ambient glow spots */
+        .ambient-glow {
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: -1;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        .ambient-blue {
+            background: #2563eb;
+            top: 15%;
+            left: 5%;
+        }
+
+        .ambient-purple {
+            background: #7c3aed;
+            bottom: 20%;
+            right: 5%;
+        }
+
+        /* Custom premium sliders */
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 999px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+            transition: all 0.2s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.25);
+            background: #60a5fa;
+            box-shadow: 0 0 14px rgba(59, 130, 246, 0.8);
+        }
+
+        input[type="range"]:disabled::-webkit-slider-thumb {
+            background: #475569;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        /* Premium pricing box */
+        .pricing-glow {
+            background: linear-gradient(135deg, #0d1527 0%, #080c16 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Button micro-interactions */
+        .action-btn {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.35);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .action-btn:hover {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            box-shadow: 0 6px 24px rgba(59, 130, 246, 0.45);
+            transform: translateY(-1.5px);
+        }
+
+        .action-btn:active {
+            transform: translateY(0.5px);
+        }
+
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #080c14;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #334155;
+        }
+
+        /* Print media styles */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .glass-card, .pricing-glow {
+                background: white !important;
+                border: 1px solid #cbd5e1 !important;
+                box-shadow: none !important;
+                color: black !important;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-100 antialiased selection:bg-blue-500/30 selection:text-white relative font-sans">
+    
+    <!-- Ambient Blur Background Elements -->
+    <div class="ambient-glow ambient-blue"></div>
+    <div class="ambient-glow ambient-purple"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        
+        <!-- Header Section -->
+        <header class="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-800/80 pb-6 mb-10 gap-4 no-print">
+            <div>
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="flex h-2 w-2 relative">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-500 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                    </span>
+                    <span class="text-[10px] font-bold text-blue-400 tracking-wider uppercase">Machine Learning Appraisal System</span>
+                </div>
+                <h1 class="text-3xl font-extrabold tracking-tight text-white flex items-center gap-2">
+                    ApexValuer <span class="bg-blue-500/10 text-blue-400 text-xs px-2.5 py-0.5 rounded-md border border-blue-500/20 font-semibold">Pro</span>
+                </h1>
+                <p class="text-xs text-slate-400 mt-1.5 max-w-2xl leading-relaxed">
+                    Real-time property valuation engine running supervised Random Forest algorithms, optimized with statutory Gujarat Jantri benchmark regulations.
+                </p>
+            </div>
+            
+            <div class="flex items-center gap-3 self-start md:self-center">
+                <div class="glass-card rounded-xl px-4 py-2.5 flex items-center gap-3 border border-slate-800">
+                    <span class="flex h-2.5 w-2.5 relative">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                    </span>
+                    <div class="text-left">
+                        <p class="text-[9px] text-slate-400 font-bold uppercase tracking-wider leading-none">Status</p>
+                        <p class="text-xs text-slate-200 font-semibold mt-0.5">Gujarat Production Live</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Dashboard Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- Left Panel: Valuation Input Controls -->
+            <section class="lg:col-span-5 space-y-6 no-print">
+                
+                <!-- Presets / Quick Configurations -->
+                <div class="glass-card p-5 rounded-2xl">
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                        <span>⚡</span> Valuation Presets
+                    </label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button type="button" onclick="applyPreset('studio')" class="py-2 text-[10px] font-bold rounded-lg bg-slate-900/40 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-800/80 hover:border-slate-700/50 transition-all duration-300">
+                            🏢 Studio
+                        </button>
+                        <button type="button" onclick="applyPreset('family')" class="py-2 text-[10px] font-bold rounded-lg bg-slate-900/40 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-800/80 hover:border-slate-700/50 transition-all duration-300">
+                            🏡 3BHK Flat
+                        </button>
+                        <button type="button" onclick="applyPreset('penthouse')" class="py-2 text-[10px] font-bold rounded-lg bg-slate-900/40 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-800/80 hover:border-slate-700/50 transition-all duration-300">
+                            👑 Penthouse
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Pipeline State Card -->
+                <div class="glass-card p-5 rounded-2xl">
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                        <span>💼</span> Construction Pipeline
+                    </label>
+                    <div class="grid grid-cols-2 gap-2 bg-slate-950/40 p-1 rounded-xl border border-slate-800/80">
+                        <button type="button" onclick="toggleConstruction('ready')" id="const-btn-ready" class="w-full py-2.5 text-xs font-bold rounded-lg bg-slate-800 text-white shadow-sm border border-slate-700/30 transition-all duration-300">
+                            🔑 Ready To Move
+                        </button>
+                        <button type="button" onclick="toggleConstruction('under_construction')" id="const-btn-uc" class="w-full py-2.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition-all duration-300">
+                            🚧 Under Construction
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Geographic Parameters Card -->
+                <div class="glass-card p-5 rounded-2xl space-y-4">
+                    <h3 class="text-xs font-bold text-blue-400 uppercase tracking-wider flex items-center gap-2">
+                        <span>📍</span> Geographic Parameters
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1.5">Target Municipal District</label>
+                            <select id="district" onchange="updateDefaultJantri()" class="w-full bg-slate-900/60 border border-slate-800 rounded-xl p-3 outline-none focus:border-blue-500 font-medium text-sm text-slate-300 transition-all">
+                                {% for d in districts %}
+                                <option value="{{ d }}">{{ d }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 mb-1.5">Zone Jantri Rate (₹/SqFt)</label>
+                                <div class="relative">
+                                    <input type="number" id="jantri" value="4460" oninput="markDirty()" class="w-full bg-slate-900/60 border border-slate-800 rounded-xl p-3 outline-none focus:border-blue-500 font-bold text-sm text-slate-100 transition-all">
+                                    <span class="absolute right-3 top-3.5 text-[10px] text-slate-500 font-semibold uppercase">Rate</span>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div class="flex justify-between items-center mb-1.5">
+                                    <label class="block text-xs font-semibold text-slate-400">Total Footprint</label>
+                                    <div class="flex items-center gap-1">
+                                        <input type="number" id="sqft" value="1200" oninput="syncSqft(this.value, 'input')" class="w-14 bg-transparent border-b border-slate-800 hover:border-slate-700 focus:border-blue-500 text-right outline-none font-bold text-xs text-slate-200 py-0.5 transition-all">
+                                        <span class="text-[9px] text-slate-500 font-bold">SqFt</span>
+                                    </div>
+                                </div>
+                                <div class="pt-2">
+                                    <input type="range" id="sqft-slider" min="300" max="8000" step="50" value="1200" oninput="syncSqft(this.value, 'slider')">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Room Configuration & Finishes Card -->
+                <div class="glass-card p-5 rounded-2xl space-y-4">
+                    <h3 class="text-xs font-bold text-blue-400 uppercase tracking-wider flex items-center gap-2">
+                        <span>🛋️</span> Layout & Finish Configurations
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-2">Room Format (BHK)</label>
+                            <div class="grid grid-cols-4 gap-2 bg-slate-950/40 p-1 rounded-xl border border-slate-800/80">
+                                <button type="button" onclick="selectBhk(1)" id="bhk-btn-1" class="py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition-all duration-300">1 BHK</button>
+                                <button type="button" onclick="selectBhk(2)" id="bhk-btn-2" class="py-2 text-xs font-bold rounded-lg bg-slate-800 text-white shadow-sm border border-slate-700/30 transition-all duration-300">2 BHK</button>
+                                <button type="button" onclick="selectBhk(3)" id="bhk-btn-3" class="py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition-all duration-300">3 BHK</button>
+                                <button type="button" onclick="selectBhk(4)" id="bhk-btn-4" class="py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition-all duration-300">4 BHK</button>
+                            </div>
+                            <input type="hidden" id="bhk" value="2">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between items-center mb-1.5">
+                                <label id="age-label" class="block text-xs font-semibold text-slate-400">Building Structural Age</label>
+                                <div class="flex items-center gap-1">
+                                    <input type="number" id="age" value="2" oninput="syncAge(this.value, 'input')" class="w-8 bg-transparent border-b border-slate-800 focus:border-blue-500 text-right outline-none font-bold text-xs text-slate-200 py-0.5 transition-all">
+                                    <span class="text-[9px] text-slate-500 font-bold">Yrs</span>
+                                </div>
+                            </div>
+                            <div class="pt-2">
+                                <input type="range" id="age-slider" min="0" max="60" step="1" value="2" oninput="syncAge(this.value, 'slider')">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-2">Interior Fit-out Tier</label>
+                            <div class="grid grid-cols-3 gap-2 bg-slate-950/40 p-1 rounded-xl border border-slate-800/80">
+                                <button type="button" onclick="selectFurnishing(0)" id="furnish-btn-0" class="py-2.5 text-[10px] font-bold rounded-lg bg-slate-800 text-white shadow-sm border border-slate-700/30 transition-all duration-300">
+                                    Raw Unfurnished
+                                </button>
+                                <button type="button" onclick="selectFurnishing(1)" id="furnish-btn-1" class="py-2.5 text-[10px] font-semibold rounded-lg text-slate-400 hover:text-white transition-all duration-300">
+                                    Semi Furnished
+                                </button>
+                                <button type="button" onclick="selectFurnishing(2)" id="furnish-btn-2" class="py-2.5 text-[10px] font-semibold rounded-lg text-slate-400 hover:text-white transition-all duration-300">
+                                    Fully Executed
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Accessibility & Elevators Card -->
+                <div class="glass-card p-5 rounded-2xl space-y-4">
+                    <h3 class="text-xs font-bold text-blue-400 uppercase tracking-wider flex items-center gap-2">
+                        <span>🏢</span> Elevation & Accessibility
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <div class="flex justify-between items-center mb-1.5">
+                                <label class="block text-xs font-semibold text-slate-400">Target Floor Level</label>
+                                <div class="flex items-center gap-1">
+                                    <input type="number" id="floor" value="3" oninput="syncFloor(this.value, 'input')" class="w-8 bg-transparent border-b border-slate-800 focus:border-blue-500 text-right outline-none font-bold text-xs text-slate-200 py-0.5 transition-all">
+                                    <span class="text-[9px] text-slate-500 font-bold">Flr</span>
+                                </div>
+                            </div>
+                            <div class="pt-2">
+                                <input type="range" id="floor-slider" min="1" max="50" step="1" value="3" oninput="syncFloor(this.value, 'slider')">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-2">Elevator Availability</label>
+                            <div class="grid grid-cols-2 gap-2 bg-slate-950/40 p-1 rounded-xl border border-slate-800/80">
+                                <button type="button" onclick="selectLift(1)" id="lift-btn-1" class="py-2.5 text-xs font-bold rounded-lg bg-slate-800 text-white shadow-sm border border-slate-700/30 transition-all duration-300">Yes, Lift</button>
+                                <button type="button" onclick="selectLift(0)" id="lift-btn-0" class="py-2.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition-all duration-300">No Lift</button>
+                            </div>
+                            <select id="lift" class="hidden">
+                                <option value="1" selected>Yes</option>
+                                <option value="0">No</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Process Button -->
+                <button type="button" onclick="processValuationQuery()" id="calculate-btn" class="action-btn text-white w-full font-bold text-sm py-4 px-6 rounded-2xl border border-blue-400/20 cursor-pointer flex items-center justify-center gap-2">
+                    <span>🚀</span> Run Supervised Valuation Engine
+                </button>
+
+            </section>
+
+            <!-- Right Panel: Valuation Dashboard Output -->
+            <section class="lg:col-span-7 space-y-6">
+                
+                <!-- Awaiting Model Inputs (Idle State) -->
+                <div id="placeholder-box" class="glass-card border border-slate-800/80 border-dashed rounded-3xl p-10 text-center flex flex-col items-center justify-center min-h-[550px] no-print">
+                    <div class="w-16 h-16 bg-slate-900/60 rounded-2xl flex items-center justify-center border border-slate-800 text-3xl mb-4 shadow-xl shadow-slate-950">
+                        📊
+                    </div>
+                    <h4 class="font-bold text-slate-300 text-base">Awaiting Model Parameters</h4>
+                    <p class="text-xs text-slate-500 max-w-sm mt-2 leading-relaxed">
+                        Configure geographic coordinates, layout attributes, and accessibility parameters in the configuration panel, then run the engine to calculate valuation.
+                    </p>
+                </div>
+
+                <!-- Loading State Screen -->
+                <div id="loading-box" class="hidden glass-card rounded-3xl p-10 text-center flex flex-col items-center justify-center min-h-[550px] no-print">
+                    <div class="relative w-20 h-20 mb-6 flex items-center justify-center">
+                        <span class="absolute inline-flex h-full w-full rounded-full bg-blue-500/10 animate-ping"></span>
+                        <span class="absolute inline-flex h-16 w-16 rounded-full bg-blue-500/20 animate-pulse"></span>
+                        <div class="relative w-12 h-12 bg-gradient-to-tr from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-lg shadow-blue-500/30">
+                            <svg class="animate-spin h-6 w-6 text-white" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <h4 id="loading-step" class="font-bold text-slate-200 text-base">Initializing Core...</h4>
+                    <p class="text-xs text-slate-500 max-w-xs mt-2">Feeding parameters into the Random Forest estimator...</p>
+                </div>
+
+                <!-- Active Report Output (Calculated State) -->
+                <div id="output-box" class="hidden space-y-6">
+                    
+                    <!-- Primary Value Display -->
+                    <div class="pricing-glow p-6 sm:p-8 rounded-3xl relative overflow-hidden">
+                        <div class="absolute -top-12 -right-12 w-40 h-40 bg-blue-500/5 blur-3xl rounded-full"></div>
+                        
+                        <div class="flex items-center justify-between border-b border-slate-800/80 pb-4 mb-6">
+                            <div class="text-left">
+                                <span class="text-[9px] font-bold tracking-widest text-blue-400 uppercase">Analysis Output</span>
+                                <div id="asset-grade-lbl" class="text-xs text-slate-400 font-medium mt-0.5">Calculated Valuation</div>
+                            </div>
+                            
+                            <!-- Currency Selector Tab -->
+                            <div class="flex bg-slate-950/60 p-0.5 rounded-lg border border-slate-800 no-print">
+                                <button type="button" onclick="setCurrencyUnit('lakhs')" id="unit-lakhs" class="px-2.5 py-1 text-[10px] font-bold rounded bg-slate-800 text-white shadow-sm border border-slate-700/30">Lakhs</button>
+                                <button type="button" onclick="setCurrencyUnit('crores')" id="unit-crores" class="px-2.5 py-1 text-[10px] font-semibold rounded text-slate-400 hover:text-white transition-colors">Crores</button>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                            <div>
+                                <h4 class="text-xs text-slate-400 font-medium mb-1">Estimated Asset Value</h4>
+                                <h2 id="final-price-tag" class="text-4xl sm:text-5xl font-black text-white tracking-tight mb-2">₹0.00 Lakhs</h2>
+                                <span id="asset-grade-badge" class="inline-block text-[10px] font-extrabold bg-blue-500/15 text-blue-400 border border-blue-500/30 px-3 py-1 rounded-full shadow-sm">Standard Quality</span>
+                            </div>
+                            
+                            <!-- Print button -->
+                            <button type="button" onclick="window.print()" class="no-print self-start sm:self-center px-4 py-2 border border-slate-800 hover:border-slate-700 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition-all flex items-center gap-1.5 bg-slate-950/20">
+                                <span>🖨️</span> Export Report
+                            </button>
+                        </div>
+
+                        <!-- Explanatory note -->
+                        <div class="mt-6">
+                            <p id="summary-lbl" class="text-xs text-slate-400 leading-relaxed bg-slate-950/50 p-4 rounded-xl border border-slate-900"></p>
+                        </div>
+
+                        <!-- Mini metrics grid -->
+                        <div class="grid grid-cols-3 gap-3 mt-6 pt-6 border-t border-slate-900">
+                            <div class="bg-slate-950/40 p-3 rounded-xl border border-slate-900">
+                                <span class="text-[8px] text-slate-500 uppercase font-bold tracking-wider block mb-1">Structural Base</span>
+                                <span id="m-base" class="text-xs font-bold text-slate-200">₹0.00 L</span>
+                            </div>
+                            <div class="bg-slate-950/40 p-3 rounded-xl border border-slate-900">
+                                <span class="text-[8px] text-slate-500 uppercase font-bold tracking-wider block mb-1">Interior Addon</span>
+                                <span id="m-furniture" class="text-xs font-bold text-slate-200">₹0.00 L</span>
+                            </div>
+                            <div class="bg-slate-950/40 p-3 rounded-xl border border-slate-900">
+                                <span class="text-[8px] text-slate-500 uppercase font-bold tracking-wider block mb-1">Elevation Delta</span>
+                                <span id="m-elevation" class="text-xs font-bold text-slate-200">₹0.00 L</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Acquisition Cost Breakdown Card (Gujarat) -->
+                    <div class="bg-slate-900/40 border border-slate-800/80 p-5 rounded-2xl">
+                        <h4 class="text-xs font-bold text-slate-400 tracking-wider uppercase mb-3 flex items-center gap-1.5">
+                            <span>🏛️</span> Gujarat Statutory acquisition cost
+                        </h4>
+                        <div class="space-y-2.5">
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="text-slate-400">Stamp Duty (4.9%)</span>
+                                <span id="m-stamp-duty" class="font-semibold text-slate-200">₹0.00 L</span>
+                            </div>
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="text-slate-400">Registration Fee (1.0%)</span>
+                                <span id="m-reg-fee" class="font-semibold text-slate-200">₹0.00 L</span>
+                            </div>
+                            <div class="border-t border-slate-800 pt-2 flex justify-between items-center text-xs font-bold">
+                                <span class="text-blue-400">Total Capital Outlay</span>
+                                <span id="m-total-outlay" class="text-blue-400">₹0.00 L</span>
+                            </div>
+                        </div>
+                        <p class="text-[9px] text-slate-500 mt-2 leading-relaxed">
+                            Calculated according to the Gujarat Revenue Department standard fee schedule. Registration fees are waived for female owners.
+                        </p>
+                    </div>
+
+
+
+                    <!-- Interactive Chart Dashboard -->
+                    <div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-5 no-print">
+                        <div class="flex items-center justify-between border-b border-slate-800/60 pb-3.5 mb-4">
+                            <h4 class="text-xs font-bold text-slate-400 tracking-wider uppercase">Analytics Engine</h4>
+                            
+                            <!-- Chart selector tabs -->
+                            <div class="flex gap-0.5 bg-slate-950/80 p-0.5 rounded-lg border border-slate-900">
+                                <button type="button" onclick="switchChartTab('breakdown')" id="tab-btn-breakdown" class="px-2.5 py-1 text-[9px] font-bold rounded bg-slate-800 text-white shadow-sm border border-slate-700/30 transition-all">Breakdown</button>
+                                <button type="button" onclick="switchChartTab('jantri')" id="tab-btn-jantri" class="px-2.5 py-1 text-[9px] font-medium rounded text-slate-400 hover:text-white transition-all">Statutory Audit</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Chart container canvas elements -->
+                        <div class="relative h-[220px] flex items-center justify-center">
+                            <div id="chart-container-breakdown" class="w-full h-full">
+                                <canvas id="breakdownChartCanvas"></canvas>
+                            </div>
+                            <div id="chart-container-jantri" class="w-full h-full hidden">
+                                <canvas id="jantriChartCanvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Statutory Jantri Floor Warn (Glow Box) -->
+                    <div id="safety-warning" class="hidden bg-amber-500/10 border border-amber-500/35 p-5 rounded-2xl text-xs text-amber-300 leading-relaxed relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-1.5 h-full bg-amber-500"></div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-base">⚠️</span>
+                            <div>
+                                <b class="font-bold uppercase tracking-wider text-[10px] block mb-1">Legal Boundary Threshold Activated</b>
+                                The raw statistical regression price fell below the government Jantri guideline floor. A standard 15% statutory adjustment index has been automatically applied to meet municipal regulatory requirements.
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Interactive script definitions -->
+    <script>
+        // Injected JS Debug logging setup
+        async function saveDebugLog(msg) {
+            try {
+                await fetch('/debug_log', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ log: `[JS DEBUG] ${msg}` })
+                });
+            } catch(e) {}
+        }
+
+        window.onerror = function(message, source, lineno, colno, error) {
+            const errStr = `CRASH: ${message} at ${source}:${lineno}:${colno} - Stack: ${error ? error.stack : ''}`;
+            saveDebugLog(errStr);
+            return false;
+        };
+
+        // Hook console.error
+        const originalConsoleError = console.error;
+        console.error = function(...args) {
+            saveDebugLog(`Console Error: ${args.join(' ')}`);
+            originalConsoleError.apply(console, args);
+        };
+        const originalConsoleWarn = console.warn;
+        console.warn = function(...args) {
+            saveDebugLog(`Console Warn: ${args.join(' ')}`);
+            originalConsoleWarn.apply(console, args);
+        };
+
+        let selected_furnishing_tier = 0;
+        let active_construction_pipeline = "ready";
+        let lastValuationResult = {
+            final_price: 0,
+            base_structural: 0,
+            furniture_addon: 0,
+            elevation_delta: 0,
+            project_note: "Ready to move asset footprint.",
+            safety_applied: false
+        };
+        let selectedCurrencyUnit = 'lakhs';
+        let isDirty = false;
+
+        // Chart.js references
+        let breakdownChart = null;
+        let jantriChart = null;
+
+        // Execute on load
+        window.addEventListener('DOMContentLoaded', async () => {
+            saveDebugLog("DOMContentLoaded fired");
+            // First load default values
+            await updateDefaultJantri();
+            // Trigger automatic calculation on load to make dashboard active
+            await processValuationQuery(true);
+            saveDebugLog(`Initial load query finished. lastValuationResult = ${JSON.stringify(lastValuationResult)}`);
+        });
+
+        // Dynamic Jantri Rate Pull Function
+        async function updateDefaultJantri() {
+            const chosenCity = document.getElementById('district').value;
+            try {
+                const response = await fetch(`/get_jantri?district=${chosenCity}`);
+                const data = await response.json();
+                document.getElementById('jantri').value = data.default_jantri;
+                markDirty();
+            } catch (err) {
+                console.error("Failed to query Jantri endpoint: " + err);
+            }
+        }
+
+        // Input Sync routines
+        function syncSqft(val, origin) {
+            const slider = document.getElementById('sqft-slider');
+            const input = document.getElementById('sqft');
+            if (origin === 'slider') {
+                input.value = val;
+            } else {
+                let num = parseInt(val) || 1200;
+                if (num < 300) num = 300;
+                if (num > 8000) num = 8000;
+                slider.value = num;
+            }
+            markDirty();
+        }
+
+        function syncAge(val, origin) {
+            const slider = document.getElementById('age-slider');
+            const input = document.getElementById('age');
+            if (origin === 'slider') {
+                input.value = val;
+            } else {
+                let num = parseInt(val) || 0;
+                if (num < 0) num = 0;
+                if (num > 60) num = 60;
+                slider.value = num;
+            }
+            markDirty();
+        }
+
+        function syncFloor(val, origin) {
+            const slider = document.getElementById('floor-slider');
+            const input = document.getElementById('floor');
+            if (origin === 'slider') {
+                input.value = val;
+            } else {
+                let num = parseInt(val) || 1;
+                if (num < 1) num = 1;
+                if (num > 50) num = 50;
+                slider.value = num;
+            }
+            markDirty();
+        }
+
+        // Custom selector group actions
+        function selectBhk(bhkVal) {
+            document.getElementById('bhk').value = bhkVal;
+            [1, 2, 3, 4].forEach(i => {
+                const btn = document.getElementById(`bhk-btn-${i}`);
+                if (i === bhkVal) {
+                    btn.className = "py-2 text-xs font-bold rounded-lg bg-slate-800 text-white shadow-sm border border-slate-700/30 transition-all duration-300";
+                } else {
+                    btn.className = "py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition-all duration-300";
+                }
+            });
+            markDirty();
+        }
+
+        function selectFurnishing(tier) {
+            selected_furnishing_tier = tier;
+            [0, 1, 2].forEach(i => {
+                const btn = document.getElementById(`furnish-btn-${i}`);
+                if (i === tier) {
+                    btn.className = "py-2.5 text-[10px] font-bold rounded-lg bg-slate-800 text-white shadow-sm border border-slate-700/30 transition-all duration-300";
+                } else {
+                    btn.className = "py-2.5 text-[10px] font-semibold rounded-lg text-slate-400 hover:text-white transition-all duration-300";
+                }
+            });
+            markDirty();
+        }
+
+        function selectLift(liftVal) {
+            document.getElementById('lift').value = liftVal;
+            [0, 1].forEach(i => {
+                const btn = document.getElementById(`lift-btn-${i}`);
+                if (i === liftVal) {
+                    btn.className = "py-2.5 text-xs font-bold rounded-lg bg-slate-800 text-white shadow-sm border border-slate-700/30 transition-all duration-300";
+                } else {
+                    btn.className = "py-2.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition-all duration-300";
+                }
+            });
+            markDirty();
+        }
+
+        function toggleConstruction(status) {
+            active_construction_pipeline = status;
+            const btnReady = document.getElementById("const-btn-ready");
+            const btnUC = document.getElementById("const-btn-uc");
+            const ageInput = document.getElementById("age");
+            const ageSlider = document.getElementById("age-slider");
+            const ageLabel = document.getElementById("age-label");
+
+            if (status === "ready") {
+                btnReady.className = "w-full py-2.5 text-xs font-bold rounded-lg bg-slate-800 text-white shadow-sm border border-slate-700/30 transition-all duration-300";
+                btnUC.className = "w-full py-2.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition-all duration-300";
+                
+                ageInput.disabled = false;
+                ageSlider.disabled = false;
+                ageInput.value = "2";
+                ageSlider.value = "2";
+                ageLabel.innerText = "Building Structural Age";
+                ageLabel.className = "block text-xs font-semibold text-slate-400";
+            } else {
+                btnReady.className = "w-full py-2.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition-all duration-300";
+                btnUC.className = "w-full py-2.5 text-xs font-bold rounded-lg bg-slate-800 text-white shadow-sm border border-slate-700/30 transition-all duration-300";
+                
+                ageInput.disabled = true;
+                ageSlider.disabled = true;
+                ageInput.value = "0";
+                ageSlider.value = "0";
+                ageLabel.innerText = "Building Structural Age (Locked: New)";
+                ageLabel.className = "block text-xs font-semibold text-slate-500";
+            }
+            markDirty();
+        }
+
+        // Apply pre-configured shortcuts
+        function applyPreset(preset) {
+            if (preset === 'studio') {
+                document.getElementById('district').value = 'Ahmedabad';
+                document.getElementById('jantri').value = 4460;
+                
+                syncSqft(600, 'slider');
+                selectBhk(1);
+                syncAge(5, 'slider');
+                selectFurnishing(0); // Raw
+                syncFloor(2, 'slider');
+                selectLift(0); // No Lift
+                toggleConstruction('ready');
+            } else if (preset === 'family') {
+                document.getElementById('district').value = 'Surat';
+                document.getElementById('jantri').value = 3530;
+                
+                syncSqft(1600, 'slider');
+                selectBhk(3);
+                syncAge(2, 'slider');
+                selectFurnishing(1); // Semi
+                syncFloor(6, 'slider');
+                selectLift(1); // Lift
+                toggleConstruction('ready');
+            } else if (preset === 'penthouse') {
+                document.getElementById('district').value = 'Vadodara';
+                document.getElementById('jantri').value = 2780;
+                
+                syncSqft(3500, 'slider');
+                selectBhk(4);
+                syncAge(0, 'slider'); // locked or new
+                selectFurnishing(2); // Fully
+                syncFloor(12, 'slider');
+                selectLift(1); // Lift
+                toggleConstruction('under_construction');
+            }
+            
+            // Automatically recalculate preset details
+            processValuationQuery();
+        }
+
+        // Dirty State handling to prompt re-calculation
+        function markDirty() {
+            if (!isDirty) {
+                isDirty = true;
+                const calcBtn = document.getElementById('calculate-btn');
+                calcBtn.innerHTML = `<span>🔄</span> Recalculate Appraisal Matrix`;
+                calcBtn.className = "action-btn text-white w-full font-bold text-sm py-4 px-6 rounded-2xl border border-amber-500/30 cursor-pointer flex items-center justify-center gap-2 shadow-lg shadow-amber-500/10";
+            }
+        }
+
+        function resetValuationButton() {
+            const calcBtn = document.getElementById('calculate-btn');
+            calcBtn.innerHTML = `<span>🚀</span> Run Supervised Valuation Engine`;
+            calcBtn.className = "action-btn text-white w-full font-bold text-sm py-4 px-6 rounded-2xl border border-blue-400/20 cursor-pointer flex items-center justify-center gap-2";
+        }
+
+        // Currency/Unit toggle
+        function setCurrencyUnit(unit) {
+            selectedCurrencyUnit = unit;
+            
+            ['lakhs', 'crores'].forEach(u => {
+                const btn = document.getElementById(`unit-${u}`);
+                if (u === unit) {
+                    btn.className = "px-2.5 py-1 text-[10px] font-bold rounded bg-slate-800 text-white shadow-sm border border-slate-700/30";
+                } else {
+                    btn.className = "px-2.5 py-1 text-[10px] font-semibold rounded text-slate-400 hover:text-white transition-colors";
+                }
+            });
+            
+            if (lastValuationResult) {
+                const priceTag = document.getElementById('final-price-tag');
+                priceTag.innerText = formatValuationPrice(lastValuationResult.final_price);
+                updateOutputDisplay(lastValuationResult);
+            }
+        }
+
+        // Defensive parser for numeric formatting
+        function formatValuationPrice(valInLakhs) {
+            const num = parseFloat(valInLakhs) || 0;
+            if (selectedCurrencyUnit === 'crores') {
+                const crores = num / 100;
+                return `₹${crores.toFixed(3)} Cr`;
+            } else {
+                return `₹${num.toFixed(2)} Lakhs`;
+            }
+        }
+
+        // Counting value animation
+        function animateValue(obj, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const currentVal = progress * (end - start) + start;
+                obj.innerHTML = formatValuationPrice(currentVal);
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // Submit query to endpoint
+        async function processValuationQuery(isInitialLoad = false) {
+            const payload = {
+                district: document.getElementById('district').value,
+                jantri: document.getElementById('jantri').value,
+                sqft: document.getElementById('sqft').value,
+                bhk: document.getElementById('bhk').value,
+                furnishing_status: selected_furnishing_tier,
+                age: document.getElementById('age').value,
+                floor: document.getElementById('floor').value,
+                lift: document.getElementById('lift').value,
+                construction_status: active_construction_pipeline
+            };
+            saveDebugLog(`Valuation query payload: ${JSON.stringify(payload)}`);
+
+            // Loading state (only show loading spinner if it is not the background initial load)
+            if (!isInitialLoad) {
+                document.getElementById('placeholder-box').classList.add('hidden');
+                document.getElementById('output-box').classList.add('hidden');
+                const loadingBox = document.getElementById('loading-box');
+                loadingBox.classList.remove('hidden');
+            }
+
+            const loadingSteps = [
+                "Ingesting spatial parameters...",
+                "Querying Random Forest regression model...",
+                "Adjusting elevation delta coefficients...",
+                "Validating statutory Jantri floor limits...",
+                "Valuation complete!"
+            ];
+
+            let stepIdx = 0;
+            const stepInterval = setInterval(() => {
+                if (stepIdx < loadingSteps.length - 1) {
+                    stepIdx++;
+                    const loadingStepEl = document.getElementById('loading-step');
+                    if (loadingStepEl) loadingStepEl.innerText = loadingSteps[stepIdx];
+                }
+            }, 180);
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json();
+                
+                clearInterval(stepInterval);
+                
+                const processResult = () => {
+                    document.getElementById('loading-box').classList.add('hidden');
+                    document.getElementById('placeholder-box').classList.add('hidden');
+                    
+                    if (data.success) {
+                        document.getElementById('output-box').classList.remove('hidden');
+                        
+                        lastValuationResult = data;
+                        isDirty = false;
+                        resetValuationButton();
+                        
+                        const priceTag = document.getElementById('final-price-tag');
+                        if (isInitialLoad) {
+                            priceTag.innerText = formatValuationPrice(data.final_price);
+                        } else {
+                            animateValue(priceTag, 0, data.final_price, 700);
+                        }
+                        
+                        updateOutputDisplay(data);
+                    } else {
+                        document.getElementById('placeholder-box').classList.remove('hidden');
+                        if (!isInitialLoad) alert("Pipeline Valuation Error: " + data.error);
+                    }
+                };
+
+                if (isInitialLoad) {
+                    processResult();
+                } else {
+                    setTimeout(processResult, 350);
+                }
+
+            } catch (err) {
+                clearInterval(stepInterval);
+                document.getElementById('loading-box').classList.add('hidden');
+                document.getElementById('placeholder-box').classList.remove('hidden');
+                if (!isInitialLoad) alert("Network Communication Core Failure: " + err);
+            }
+        }
+
+        // Render fields and triggers
+        function updateOutputDisplay(data) {
+            document.getElementById('m-base').innerText = formatValuationPrice(data.base_structural);
+            document.getElementById('m-furniture').innerText = `+${formatValuationPrice(data.furniture_addon)}`;
+            
+            const elevationTag = document.getElementById('m-elevation');
+            if (data.elevation_delta >= 0) {
+                elevationTag.innerText = `+${formatValuationPrice(data.elevation_delta)}`;
+                elevationTag.className = "text-xs font-bold text-emerald-400";
+            } else {
+                elevationTag.innerText = `-${formatValuationPrice(Math.abs(data.elevation_delta))}`;
+                elevationTag.className = "text-xs font-bold text-rose-400";
+            }
+
+            // Acquisition costs (Stamp Duty 4.9%, Registration 1.0%)
+            const stampDuty = data.final_price * 0.049;
+            const regFee = data.final_price * 0.01;
+            const totalOutlay = data.final_price + stampDuty + regFee;
+
+            document.getElementById('m-stamp-duty').innerText = formatValuationPrice(stampDuty);
+            document.getElementById('m-reg-fee').innerText = formatValuationPrice(regFee);
+            document.getElementById('m-total-outlay').innerText = formatValuationPrice(totalOutlay);
+
+            const payloadBhk = document.getElementById('bhk').value;
+            const payloadDistrict = document.getElementById('district').value;
+            document.getElementById('summary-lbl').innerHTML = `${data.project_note} Analyzing metrics for a <b>${payloadBhk} BHK</b> format inside <b>${payloadDistrict}</b>.`;
+
+
+
+            // Regulatory safety warning
+            const safetyWarning = document.getElementById('safety-warning');
+            if (data.safety_applied) {
+                safetyWarning.classList.remove('hidden');
+            } else {
+                safetyWarning.classList.add('hidden');
+            }
+
+            updateAssetGrade(data);
+            renderCharts(data);
+        }
+
+        // Quality grade estimation logic
+        function updateAssetGrade(data) {
+            const bhk = parseInt(document.getElementById('bhk').value);
+            const age = parseInt(document.getElementById('age').value);
+            const furnishing = selected_furnishing_tier;
+            
+            let score = 0;
+            if (furnishing === 2) score += 4;
+            else if (furnishing === 1) score += 2;
+            
+            if (age <= 3) score += 3;
+            else if (age <= 10) score += 2;
+            else if (age <= 20) score += 1;
+            
+            if (bhk >= 3) score += 3;
+            else if (bhk === 2) score += 2;
+            else score += 1;
+            
+            const gradeLabel = document.getElementById('asset-grade-lbl');
+            const gradeBadge = document.getElementById('asset-grade-badge');
+            
+            if (score >= 8) {
+                gradeLabel.innerText = "Premium Executive Asset";
+                gradeBadge.className = "inline-block text-[10px] font-extrabold bg-amber-500/15 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-full shadow-sm";
+                gradeBadge.innerText = "Executive Gold Grade";
+            } else if (score >= 5) {
+                gradeLabel.innerText = "Standard Portfolio Asset";
+                gradeBadge.className = "inline-block text-[10px] font-extrabold bg-blue-500/15 text-blue-400 border border-blue-500/30 px-3 py-1 rounded-full shadow-sm";
+                gradeBadge.innerText = "Premium Silver Grade";
+            } else {
+                gradeLabel.innerText = "Basic Entry-Level Asset";
+                gradeBadge.className = "inline-block text-[10px] font-extrabold bg-slate-500/15 text-slate-400 border border-slate-500/30 px-3 py-1 rounded-full shadow-sm";
+                gradeBadge.innerText = "Standard Bronze Grade";
+            }
+        }
+
+        // Tabs switcher for graphs
+        function switchChartTab(tab) {
+            const tabs = ['breakdown', 'jantri'];
+            tabs.forEach(t => {
+                const container = document.getElementById(`chart-container-${t}`);
+                const btn = document.getElementById(`tab-btn-${t}`);
+                
+                if (t === tab) {
+                    container.classList.remove('hidden');
+                    btn.className = "px-2.5 py-1 text-[9px] font-bold rounded bg-slate-800 text-white shadow-sm border border-slate-700/30 transition-all";
+                } else {
+                    container.classList.add('hidden');
+                    btn.className = "px-2.5 py-1 text-[9px] font-medium rounded text-slate-400 hover:text-white transition-all";
+                }
+            });
+
+            // Re-render charts when tab switches to draw on the now-visible canvas
+            if (lastValuationResult) {
+                renderCharts(lastValuationResult);
+            }
+        }
+
+        // Destroy existing graphs to prevent canvas overlap exceptions
+        function destroyCharts() {
+            if (breakdownChart) {
+                breakdownChart.destroy();
+                breakdownChart = null;
+            }
+            if (jantriChart) {
+                jantriChart.destroy();
+                jantriChart = null;
+            }
+        }
+
+        // Chart rendering core
+        function renderCharts(data) {
+            destroyCharts();
+
+            // 1. Breakdown Chart (Doughnut)
+            const breakdownContainer = document.getElementById('chart-container-breakdown');
+            if (breakdownContainer && !breakdownContainer.classList.contains('hidden')) {
+                const breakdownCtx = document.getElementById('breakdownChartCanvas').getContext('2d');
+                breakdownChart = new Chart(breakdownCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Base Structure', 'Interior Add-on', 'Floor premium'],
+                        datasets: [{
+                            data: [
+                                data.base_structural,
+                                data.furniture_addon,
+                                Math.max(0, data.elevation_delta)
+                            ],
+                            backgroundColor: [
+                                'rgba(59, 130, 246, 0.8)',  // Blue
+                                'rgba(124, 58, 237, 0.8)', // Purple
+                                'rgba(16, 185, 129, 0.8)'  // Emerald
+                            ],
+                            borderColor: [
+                                '#3b82f6',
+                                '#7c3aed',
+                                '#10b981'
+                            ],
+                            borderWidth: 1.5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    color: '#94a3b8',
+                                    boxWidth: 12,
+                                    padding: 15,
+                                    font: { family: 'Plus Jakarta Sans', size: 10, weight: '500' }
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                                borderColor: 'rgba(255, 255, 255, 0.08)',
+                                borderWidth: 1,
+                                titleFont: { family: 'Plus Jakarta Sans', size: 11, weight: 'bold' },
+                                bodyFont: { family: 'Plus Jakarta Sans', size: 11 },
+                                callbacks: {
+                                    label: function(context) {
+                                        return ` ${context.label}: ${formatValuationPrice(context.raw)}`;
+                                    }
+                                }
+                            }
+                        },
+                        cutout: '72%'
+                    }
+                });
+            }
+
+
+
+            // 3. Jantri Floor comparison chart
+            const jantriContainer = document.getElementById('chart-container-jantri');
+            if (jantriContainer && !jantriContainer.classList.contains('hidden')) {
+                const jantriFloor = (parseFloat(document.getElementById('jantri').value) * parseFloat(document.getElementById('sqft').value)) / 100000;
+                const jantriCtx = document.getElementById('jantriChartCanvas').getContext('2d');
+                
+                jantriChart = new Chart(jantriCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Market Value', 'Jantri Legal Floor'],
+                        datasets: [{
+                            data: [data.final_price, jantriFloor],
+                            backgroundColor: [
+                                data.safety_applied ? 'rgba(245, 158, 11, 0.7)' : 'rgba(59, 130, 246, 0.7)',
+                                'rgba(148, 163, 184, 0.4)'
+                            ],
+                            borderColor: [
+                                data.safety_applied ? '#f59e0b' : '#3b82f6',
+                                '#94a3b8'
+                            ],
+                            borderWidth: 1.5,
+                            borderRadius: 5,
+                            barThickness: 24
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                                borderColor: 'rgba(255, 255, 255, 0.08)',
+                                borderWidth: 1,
+                                titleFont: { family: 'Plus Jakarta Sans', size: 11, weight: 'bold' },
+                                bodyFont: { family: 'Plus Jakarta Sans', size: 11 },
+                                callbacks: {
+                                    label: function(context) {
+                                        return ` Price: ${formatValuationPrice(context.raw)}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: { color: 'rgba(255, 255, 255, 0.04)' },
+                                ticks: { color: '#64748b', font: { family: 'Plus Jakarta Sans', size: 9 } }
+                            },
+                            y: {
+                                grid: { display: false },
+                                ticks: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans', size: 10, weight: '600' } }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+[JS DEBUG] DOMContentLoaded fired
+[JS DEBUG] Valuation query payload: {"district":"Ahmedabad","jantri":"4460","sqft":"1200","bhk":"2","furnishing_status":0,"age":"2","floor":"3","lift":"1","construction_status":"ready"}
+[JS DEBUG] Initial load query finished. lastValuationResult = {"base_structural":64.89,"elevation_delta":1.5,"final_price":66.39,"furniture_addon":0,"future_appreciation":0,"project_note":"Ready to move asset footprint.","safety_applied":false,"success":true}
+[JS DEBUG] Auto-clicking Millions button...
+[JS DEBUG] After Millions click. selectedCurrencyUnit = millions, priceTag = ₹6.64 M
+[JS DEBUG] Auto-selecting Under Construction status...
+[JS DEBUG] Running Valuation Query...
+[JS DEBUG] Valuation query payload: {"district":"Ahmedabad","jantri":"4460","sqft":"1200","bhk":"2","furnishing_status":0,"age":"0","floor":"3","lift":"1","construction_status":"under_construction"}
+[JS DEBUG] Valuation query complete. lastValuationResult = {"base_structural":64.89,"elevation_delta":1.5,"final_price":66.39,"furniture_addon":0,"future_appreciation":0,"project_note":"Ready to move asset footprint.","safety_applied":false,"success":true}
+[JS DEBUG] Auto-clicking Future Forecast tab...
+[JS DEBUG] Test cycle successfully finished!
+[JS DEBUG] Valuation query payload: {"district":"Ahmedabad","jantri":"4460","sqft":"600","bhk":"1","furnishing_status":0,"age":"2","floor":"2","lift":"0","construction_status":"ready"}
+[JS DEBUG] DOMContentLoaded fired
+[JS DEBUG] Valuation query payload: {"district":"Ahmedabad","jantri":"4460","sqft":"1200","bhk":"2","furnishing_status":0,"age":"2","floor":"3","lift":"1","construction_status":"ready"}
+[JS DEBUG] Initial load query finished. lastValuationResult = {"base_structural":64.89,"elevation_delta":1.5,"final_price":66.39,"furniture_addon":0,"future_appreciation":0,"project_note":"Ready to move asset footprint.","safety_applied":false,"success":true}
+[JS DEBUG] Auto-clicking Millions button...
+[JS DEBUG] After Millions click. selectedCurrencyUnit = millions, priceTag = ₹6.64 M
+[JS DEBUG] Auto-selecting Under Construction status...
+[JS DEBUG] Running Valuation Query...
+[JS DEBUG] Valuation query payload: {"district":"Ahmedabad","jantri":"4460","sqft":"1200","bhk":"2","furnishing_status":0,"age":"0","floor":"3","lift":"1","construction_status":"under_construction"}
+[JS DEBUG] Valuation query complete. lastValuationResult = {"base_structural":64.89,"elevation_delta":1.5,"final_price":66.39,"furniture_addon":0,"future_appreciation":0,"project_note":"Ready to move asset footprint.","safety_applied":false,"success":true}
+[JS DEBUG] Auto-clicking Future Forecast tab...
+[JS DEBUG] Test cycle successfully finished!
+[JS DEBUG] Valuation query payload: {"district":"Vadodara","jantri":"2780","sqft":"3500","bhk":"4","furnishing_status":2,"age":"0","floor":"12","lift":"1","construction_status":"under_construction"}
+[JS DEBUG] Valuation query payload: {"district":"Rajkot","jantri":"2410","sqft":"3500","bhk":"4","furnishing_status":2,"age":"0","floor":"12","lift":"1","construction_status":"under_construction"}
+[JS DEBUG] Valuation query payload: {"district":"Rajkot","jantri":"2410","sqft":"3500","bhk":"4","furnishing_status":2,"age":"2","floor":"12","lift":"1","construction_status":"ready"}
+[JS DEBUG] Valuation query payload: {"district":"Vadodara","jantri":"2780","sqft":"3500","bhk":"4","furnishing_status":2,"age":"0","floor":"12","lift":"1","construction_status":"under_construction"}
+[JS DEBUG] Valuation query payload: {"district":"Surat","jantri":"3530","sqft":"1600","bhk":"3","furnishing_status":1,"age":"2","floor":"6","lift":"1","construction_status":"ready"}
+[JS DEBUG] Valuation query payload: {"district":"Ahmedabad","jantri":"4460","sqft":"600","bhk":"1","furnishing_status":0,"age":"2","floor":"2","lift":"0","construction_status":"ready"}
+[JS DEBUG] DOMContentLoaded fired
+[JS DEBUG] Valuation query payload: {"district":"Ahmedabad","jantri":"4460","sqft":"1200","bhk":"2","furnishing_status":0,"age":"2","floor":"3","lift":"1","construction_status":"ready"}
+[JS DEBUG] Initial load query finished. lastValuationResult = {"base_structural":64.89,"elevation_delta":1.5,"final_price":66.39,"furniture_addon":0,"future_appreciation":0,"project_note":"Ready to move asset footprint.","safety_applied":false,"success":true}
+[JS DEBUG] Auto-clicking Millions button...
+[JS DEBUG] After Millions click. selectedCurrencyUnit = millions, priceTag = ₹6.64 M
+[JS DEBUG] Auto-selecting Under Construction status...
+[JS DEBUG] Valuation query payload: {"district":"Ahmedabad","jantri":"4460","sqft":"1200","bhk":"2","furnishing_status":0,"age":"0","floor":"3","lift":"1","construction_status":"under_construction"}
+[JS DEBUG] Running Valuation Query...
+[JS DEBUG] Valuation query complete. lastValuationResult = {"base_structural":64.89,"elevation_delta":1.5,"final_price":66.39,"furniture_addon":0,"future_appreciation":0,"project_note":"Ready to move asset footprint.","safety_applied":false,"success":true}
+[JS DEBUG] Auto-clicking Future Forecast tab...
+[JS DEBUG] Test cycle successfully finished!
+[JS DEBUG] Valuation query payload: {"district":"Ahmedabad","jantri":"4460","sqft":"1200","bhk":"2","furnishing_status":0,"age":"2","floor":"3","lift":"0","construction_status":"ready"}
+[JS DEBUG] DOMContentLoaded fired
+[JS DEBUG] Valuation query payload: {"district":"Ahmedabad","jantri":"4460","sqft":"1200","bhk":"2","furnishing_status":0,"age":"2","floor":"3","lift":"1","construction_status":"ready"}
+[JS DEBUG] Initial load query finished. lastValuationResult = {"base_structural":64.89,"elevation_delta":1.5,"final_price":66.39,"furniture_addon":0,"future_appreciation":0,"project_note":"Ready to move asset footprint.","safety_applied":false,"success":true}
+[JS DEBUG] Auto-clicking Millions button...
+[JS DEBUG] After Millions click. selectedCurrencyUnit = millions, priceTag = ₹6.64 M
+[JS DEBUG] Auto-selecting Under Construction status...
+[JS DEBUG] Running Valuation Query...
+[JS DEBUG] Valuation query payload: {"district":"Ahmedabad","jantri":"4460","sqft":"1200","bhk":"2","furnishing_status":0,"age":"0","floor":"3","lift":"1","construction_status":"under_construction"}
+[JS DEBUG] Valuation query complete. lastValuationResult = {"base_structural":64.89,"elevation_delta":1.5,"final_price":66.39,"furniture_addon":0,"future_appreciation":0,"project_note":"Ready to move asset footprint.","safety_applied":false,"success":true}
+[JS DEBUG] Auto-clicking Future Forecast tab...
+[JS DEBUG] Test cycle successfully finished!
+[JS DEBUG] DOMContentLoaded fired
+[JS DEBUG] Valuation query payload: {"district":"Ahmedabad","jantri":"4460","sqft":"1200","bhk":"2","furnishing_status":0,"age":"2","floor":"3","lift":"1","construction_status":"ready"}
+[JS DEBUG] Initial load query finished. lastValuationResult = {"base_structural":64.89,"elevation_delta":1.5,"final_price":66.39,"furniture_addon":0,"future_appreciation":0,"project_note":"Ready to move asset footprint.","safety_applied":false,"success":true}
+[JS DEBUG] DOMContentLoaded fired
+[JS DEBUG] Valuation query payload: {"district":"Ahmedabad","jantri":"4460","sqft":"1200","bhk":"2","furnishing_status":0,"age":"2","floor":"3","lift":"1","construction_status":"ready"}
+[JS DEBUG] Initial load query finished. lastValuationResult = {"base_structural":64.89,"elevation_delta":1.5,"final_price":66.39,"furniture_addon":0,"future_appreciation":0,"project_note":"Ready to move asset footprint.","safety_applied":false,"success":true}
+[JS DEBUG] Valuation query payload: {"district":"Surat","jantri":"3530","sqft":"1600","bhk":"3","furnishing_status":1,"age":"2","floor":"6","lift":"1","construction_status":"ready"}
+[JS DEBUG] Valuation query payload: {"district":"Surat","jantri":"3530","sqft":"1600","bhk":"4","furnishing_status":2,"age":"2","floor":"6","lift":"1","construction_status":"ready"}
+[JS DEBUG] Valuation query payload: {"district":"Surat","jantri":"3530","sqft":"1600","bhk":"4","furnishing_status":2,"age":"2","floor":"6","lift":"1","construction_status":"ready"}
